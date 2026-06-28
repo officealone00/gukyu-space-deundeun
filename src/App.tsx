@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { SearchBar } from './features/search/SearchBar'
 import { MapView } from './features/map/MapView'
@@ -31,6 +31,19 @@ export default function App() {
   const [userSigungu, setUserSigungu] = useState('')
 
   const onFav = (id: string) => setFavs(toggleFav(id))
+
+  // B. 공유 딥링크: ?id=&r= 이면 해당 지역 검색 후 그 물건 모달 자동 오픈
+  const pendingId = useRef<string | null>(null)
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search)
+    const id = sp.get('id'); const r = sp.get('r')
+    if (id) {
+      pendingId.current = id
+      if (r) setCriteria((c) => ({ ...c, region: r }))
+      handleSearch(r ?? undefined)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   async function handleSearch(regionOverride?: string) {
     const region = regionOverride ?? criteria.region
@@ -109,6 +122,24 @@ export default function App() {
     return sort === 'deadline' ? byDeadline(r) : r
   }, [raw, criteria, sort, nearMode, favOnly, favs])
 
+  // C. 지역 요약 대시보드: 현재 결과의 임대/매각 비율·평균 임대료
+  const summary = useMemo(() => {
+    if (!ranked.length) return null
+    const lease = ranked.filter((x) => x.disposalType === '임대').length
+    const sale = ranked.filter((x) => x.disposalType === '매각').length
+    const rents = ranked.filter((x) => x.disposalType === '임대' && x.amount).map((x) => x.amount!)
+    const avgRent = rents.length ? Math.round(rents.reduce((a, b) => a + b, 0) / rents.length) : null
+    return { total: ranked.length, lease, sale, avgRent }
+  }, [ranked])
+
+  // B. 데이터 로드 후 대기중인 공유 링크 물건 열기
+  useEffect(() => {
+    if (pendingId.current && raw) {
+      const found = ranked.find((x) => x.id === pendingId.current)
+      if (found) { setSelected(found); pendingId.current = null }
+    }
+  }, [raw, ranked])
+
   // 관심물건 중 마감 임박(D-7 이내) 알림
   const favDueSoon = useMemo(() => {
     if (!raw) return [] as ScoredSpace[]
@@ -133,8 +164,20 @@ export default function App() {
         {favDueSoon.length > 0 && (
           <div className="card alert">⏰ 관심물건 {favDueSoon.length}건 마감 임박 — {favDueSoon.slice(0, 2).map((x) => x.title).join(', ')} 등</div>
         )}
-        {loading && <div className="card">불러오는 중…</div>}
+        {loading && (
+          <div className="skeleton-wrap">
+            <div className="sk sk-bar" />
+            <div className="sk sk-map" />
+            <div className="sk-cards">{[0, 1, 2, 3].map((i) => <div className="sk sk-card" key={i} />)}</div>
+          </div>
+        )}
         {loadErr && <div className="card warn">{loadErr}</div>}
+        {!raw && !loading && !loadErr && (
+          <div className="card intro">
+            <strong>전국 국유·공공 <b>건물</b>을 캠코 공공데이터로 한 번에.</strong>
+            <p className="muted">업종·지역을 넣고 <b>국유·공공 부동산 찾기</b>를 누르거나, <b>📍 내 주변 10곳</b>으로 가까운 자리부터 보세요. 물건마다 상권·시세·대부료·AI 자리분석이 따라옵니다.</p>
+          </div>
+        )}
 
         {raw && !loading && (
           <>
@@ -148,6 +191,15 @@ export default function App() {
                 {!nearMode && <button className={sort === 'deadline' ? 'on' : ''} onClick={() => setSort('deadline')}>마감임박순</button>}
               </div>
             </div>
+
+            {summary && (
+              <div className="summary-row">
+                <div className="sum-card"><span className="sum-num">{summary.total}</span><span className="sum-lbl">검색 건물</span></div>
+                <div className="sum-card"><span className="sum-num">{summary.lease}</span><span className="sum-lbl">임대</span></div>
+                <div className="sum-card"><span className="sum-num">{summary.sale}</span><span className="sum-lbl">매각</span></div>
+                <div className="sum-card"><span className="sum-num">{summary.avgRent != null ? `${Math.round(summary.avgRent / 10000).toLocaleString()}만` : '–'}</span><span className="sum-lbl">평균 월임대료</span></div>
+              </div>
+            )}
 
             {ranked.length > 0 && <MapView items={ranked} onSelect={setSelected} />}
 

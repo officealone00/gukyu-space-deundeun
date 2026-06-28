@@ -18,6 +18,15 @@ export function DetailModal({ item, onClose }: { item: ScoredSpace; onClose: () 
   const [iLoading, setILoading] = useState(true)
   const [aiText, setAiText] = useState<string | null>(null)
   const [aiBusy, setAiBusy] = useState(false)
+  const [shared, setShared] = useState(false)
+
+  // B. 이 물건 공유 링크 복사 (?r=지역&id=물건ID → 열면 바로 이 상세)
+  async function share() {
+    const base = window.location.origin + window.location.pathname
+    const url = `${base}?r=${encodeURIComponent(item.region || '')}&id=${encodeURIComponent(item.id)}`
+    try { await navigator.clipboard.writeText(url) } catch { /* clipboard 미지원 */ }
+    setShared(true); setTimeout(() => setShared(false), 2000)
+  }
 
   async function runAi() {
     setAiBusy(true)
@@ -52,7 +61,10 @@ export function DetailModal({ item, onClose }: { item: ScoredSpace; onClose: () 
             {item.disposalType && <span className={`disp ${item.disposalType === '임대' ? 'lease' : 'sale'}`}>{item.disposalType}</span>}
             {item.propertyType && <span className="src-tag">{item.propertyType}</span>}
           </div>
-          <button className="x" onClick={onClose} aria-label="닫기">✕</button>
+          <div className="head-actions">
+            <button className="share-btn" onClick={share}>{shared ? '✓ 링크 복사됨' : '🔗 공유'}</button>
+            <button className="x" onClick={onClose} aria-label="닫기">✕</button>
+          </div>
         </div>
         {item.thumbnailUrl && <img className="thumb" src={item.thumbnailUrl} alt="" loading="lazy" />}
         <h3>{item.title}</h3>

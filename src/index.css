@@ -35,8 +35,9 @@ p { line-height: 1.75; margin: 0.5em 0; }
 .card.warn { border-color: #f3d27a; background: #fff8e6; }
 .card.error { border-color: #f3b4ae; background: #fdeeec; }
 
-button { cursor: pointer; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: inherit; padding: 8px 14px; font-size: 0.9rem; }
+button { cursor: pointer; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: inherit; padding: 8px 14px; font-size: 0.9rem; transition: transform 0.06s ease, background 0.12s ease; }
 button:hover { background: #eef2fb; }
+button:active { transform: scale(0.97); }
 button.primary, .primary { background: var(--brand); color: #fff; border-color: var(--brand); text-align: center; text-decoration: none; display: inline-block; }
 button.primary:hover { background: var(--brand-ink); }
 
@@ -147,3 +148,30 @@ button.primary:hover { background: var(--brand-ink); }
 .support-name { font-weight: 600; font-size: 0.9rem; }
 .support-link { display: inline-block; margin-top: 6px; font-size: 0.82rem; color: var(--brand); }
 .app-footer { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 14px; line-height: 1.6; }
+
+/* C. 지역 요약 대시보드 */
+.summary-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 4px 2px 12px; }
+.sum-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 8px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.sum-num { font-size: 1.18rem; font-weight: 800; color: var(--brand-ink); line-height: 1.2; }
+.sum-lbl { font-size: 0.72rem; color: var(--muted); }
+@media (max-width: 460px) { .summary-row { grid-template-columns: repeat(2, 1fr); } }
+
+/* D. 빈 상태 안내 */
+.card.intro { line-height: 1.7; }
+.card.intro strong { font-size: 1.02rem; }
+.card.intro p { margin: 8px 0 0; }
+
+/* D. 로딩 스켈레톤 */
+.skeleton-wrap { margin: 12px 2px; display: flex; flex-direction: column; gap: 10px; }
+.sk { border-radius: 12px; background: linear-gradient(100deg, #eef1f7 30%, #f7f9fc 50%, #eef1f7 70%); background-size: 200% 100%; animation: sk-shine 1.3s ease-in-out infinite; }
+.sk-bar { height: 34px; width: 60%; }
+.sk-map { height: 200px; }
+.sk-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sk-card { height: 92px; }
+@media (max-width: 560px) { .sk-cards { grid-template-columns: 1fr; } }
+@keyframes sk-shine { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* B. 공유 버튼 */
+.head-actions { display: flex; align-items: center; gap: 6px; }
+.share-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; color: var(--brand-ink); cursor: pointer; white-space: nowrap; }
+.share-btn:active { transform: scale(0.96); }
