@@ -9,20 +9,44 @@
   --hi: #15a06a; --mid: #c98a00; --lo: #97a0ad;
   --urgent: #e0453a;
   font-family: "Pretendard", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
-  line-height: 1.7;
+  line-height: 1.75;
+  -webkit-text-size-adjust: 100%; /* 모바일 웹뷰 자동 확대 방지 */
 }
 * { box-sizing: border-box; }
-/* 한국어 가독성: 어절 단위 줄바꿈(음절 중간 안 끊김) + 자동 줄바꿈 */
-body { margin: 0; background: var(--bg); color: var(--ink); word-break: keep-all; overflow-wrap: break-word; }
-body, button, input, select, textarea { word-break: keep-all; }
-p { line-height: 1.75; margin: 0.5em 0; }
+/* 한국어 가독성: 어절 단위 줄바꿈(음절 중간 안 끊김) + 긴 영문/URL은 안전하게 줄바꿈 */
+body { margin: 0; background: var(--bg); color: var(--ink); word-break: keep-all; overflow-wrap: break-word; line-height: 1.75; }
+body, button, input, select, textarea, h1, h2, h3, h4, p, li, dt, dd, span, a, label, summary {
+  word-break: keep-all; overflow-wrap: break-word;
+}
+/* 제목: 음절 중간 안 끊김 + 줄간격 확보 */
+h1, h2, h3, h4 { line-height: 1.4; letter-spacing: -0.01em; }
+/* 본문·문단: 줄간격·문단 간격 키움 */
+p { line-height: 1.8; margin: 0.6em 0; }
+li { line-height: 1.75; margin: 0.25em 0; }
+dd, dt { line-height: 1.6; }
 .app { max-width: 920px; margin: 0 auto; padding: 20px 16px 64px; }
+/* 태블릿/작은 데스크톱 */
+@media (max-width: 720px) {
+  .fields { grid-template-columns: 1fr 1fr; }
+}
 /* 모바일(앱 웹뷰) 반응형 */
 @media (max-width: 560px) {
-  :root { font-size: 15px; }
+  :root { font-size: 15px; line-height: 1.8; }
+  body { line-height: 1.8; }
   .app { padding: 16px 13px 56px; }
   .brand h1 { font-size: 1.2rem; }
-  h3 { font-size: 1.05rem; }
+  h3 { font-size: 1.06rem; }
+  p { line-height: 1.85; }
+  /* 터치 타깃 키움 */
+  button { min-height: 42px; }
+  .fields { grid-template-columns: 1fr; }
+  .fields input, .fields select { font-size: 1rem; padding: 11px 12px; } /* iOS 확대 방지(16px급) */
+}
+/* 초소형 웹뷰 */
+@media (max-width: 380px) {
+  :root { font-size: 14.5px; }
+  .summary-row { gap: 6px; }
+  .sum-num { font-size: 1.05rem; }
 }
 
 .app-header { margin-bottom: 16px; }
