@@ -1,6 +1,7 @@
 // 캠코 2종(온비드 물건목록 + 공공개발 공실) → 통합 SpaceItem 정규화. 둘 다 실호출 검증(2026-06-26).
 import { dataGoItems, num, pick, toArray } from './api'
-import { buildUrl, ONBID, VACANCY, RENT, TARGET_PRPT_DIV, type DataGoService } from './endpoints'
+import { getJson } from './http'
+import { buildUrl, ONBID, VACANCY, RENT, LH, LH_CNP_CD, TARGET_PRPT_DIV, type DataGoService } from './endpoints'
 import type { SpaceItem } from './types'
 
 const SIDO = ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주']
@@ -91,6 +92,53 @@ function normalizeRent(raw: Raw): SpaceItem {
   }
 }
 
+// ④ LH 분양·임대 상가공고 정규화 — 공고 단위(주소·금액·면적 없음, 지역명·마감·상세URL만)
+function normalizeLh(raw: Raw): SpaceItem {
+  const cnpNm = pick(raw, 'CNP_CD_NM') ?? ''
+  const region = inferRegion(cnpNm) // "광주광역시"→'광주', "경기도"→'경기', "전국"→''
+  return {
+    id: `lh-${pick(raw, 'PAN_ID') ?? Math.random().toString(36).slice(2, 8)}`,
+    sourceLabel: 'LH 청약플러스 상가공고',
+    title: pick(raw, 'PAN_NM') ?? 'LH 상가 공고',
+    address: region && cnpNm !== '전국' ? cnpNm : '', // 정확 주소 미제공 → 시도명만(지오코딩 폴백)
+    region,
+    usage: pick(raw, 'AIS_TP_CD_NM', 'UPP_AIS_TP_NM') ?? '상가',
+    propertyType: 'LH 상가',
+    disposalType: '상가공고', // 22=상가(분양/임대 혼재). 임대/매각으로 단정하지 않음(정직성).
+    amountLabel: '공고 참조',
+    bidStatus: pick(raw, 'PAN_SS'),
+    bidDeadline: parseDt(pick(raw, 'CLSG_DT')),
+    detailUrl: pick(raw, 'DTL_URL', 'DTL_URL_MOB'),
+    raw, asOf: LH.asOf,
+  }
+}
+
+// LH 전용 페처 — 응답이 배열형 [{dsSch},{resHeader,dsList}]이라 dataGoItems로 못 읽음.
+function ymd(d: Date): string {
+  return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`
+}
+async function fetchLh(region: string): Promise<SpaceItem[]> {
+  const today = new Date()
+  const start = new Date(today.getTime() - 540 * 86_400_000) // 게시일 최근 18개월
+  const params: Record<string, string | number> = {
+    PG_SZ: 200, PAGE: 1, UPP_AIS_TP_CD: 22, // 22 = 상가
+    PAN_ST_DT: ymd(start), PAN_ED_DT: ymd(today),
+  }
+  const cnp = region ? LH_CNP_CD[region] : undefined
+  if (cnp) params.CNP_CD = cnp // 지역 선택 시 서버 필터
+  try {
+    const json = await getJson<unknown>(buildUrl(LH, params))
+    const arr = Array.isArray(json) ? (json as Record<string, any>[]) : []
+    const header = arr.find((x) => x && x.resHeader)?.resHeader?.[0]
+    if (header && header.SS_CODE && header.SS_CODE !== 'Y') return [] // NODATA 등 → 빈 결과
+    const list: Raw[] = arr.find((x) => x && x.dsList)?.dsList ?? []
+    const open = new Set(['공고중', '접수중', '상담요청', '정정공고중']) // 마감 제외(진행중만)
+    return list.map(normalizeLh).filter((it) => open.has(String(it.bidStatus)))
+  } catch (e) {
+    throw new SourceError(LH.label, LH.datasetUrl, String(e))
+  }
+}
+
 export class SourceError extends Error {
   constructor(public sourceLabel: string, public datasetUrl: string, message: string) {
     super(message); this.name = 'SourceError'
@@ -131,6 +179,7 @@ export async function loadAllSpaces(region = ''): Promise<LoadResult> {
     fetchSource(ONBID, onbidParams, normalizeOnbid, isBuildingItem), // 건물만(토지 제외)
     fetchSource(VACANCY, { numOfRows: 300, pageNo: 1 }, normalizeVacancy), // 공실=건물
     fetchSource(RENT, { numOfRows: 200, pageNo: 1 }, normalizeRent), // 나라키움=건물
+    fetchLh(region), // LH 상가 공고(전용 파서)
   ]
   const settled = await Promise.allSettled(tasks)
   const items: SpaceItem[] = []; const errors: SourceError[] = []
