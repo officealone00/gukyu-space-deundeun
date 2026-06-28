@@ -151,7 +151,7 @@ export default function App() {
       <div className="app">
         <header className="app-header">
           <div className="brand">
-            <img src={`${import.meta.env.BASE_URL}symbol.svg`} alt="" className="brand-symbol" width={28} height={28} />
+            <img src={`${import.meta.env.BASE_URL}symbol.png`} alt="국유공간든든" className="brand-symbol" width={30} height={30} />
             <div>
               <h1>국유공간든든</h1>
               <span className="muted">청년·소상공인을 위한 국유 유휴공간 통합 매칭 · 캠코 공공데이터 기반</span>
