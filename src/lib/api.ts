@@ -12,6 +12,8 @@ export function toArray<T>(v: T | T[] | null | undefined): T[] {
 export async function dataGoItems<T>(url: string): Promise<T[]> {
   const json = await getJson<any>(url)
   const header = json?.response?.header ?? json?.header ?? json?.result
+  // 03(NODATA)·"00 ... NODATA"는 에러가 아니라 '그 조건에 결과 0건' → 빈 배열로 정상 처리(빨간 에러 X)
+  if (header && (header.resultCode === '03' || /NODATA/i.test(header.resultMsg ?? ''))) return []
   if (header && header.resultCode && header.resultCode !== '00') {
     throw new Error(`${header.resultCode}: ${header.resultMsg ?? ''}`)
   }
