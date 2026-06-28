@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+<style>
+  :root{
+    --brand:#1f5fff;--brand-ink:#0b3bb0;--bg:#f6f8fc;--surface:#fff;--line:#e3e8f0;--ink:#1a2233;--muted:#6b7686;
+    font-family:"Pretendard Variable","Pretendard",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;
+  }
+  *{box-sizing:border-box;word-break:keep-all;}
+  body{margin:0;background:var(--bg);color:var(--ink);}
+  .frame{margin:16px auto;background:#fff;border:1px dashed #c8d2e4;border-radius:14px;overflow:hidden;}
+  .label{font-size:12px;color:#9aa6b8;padding:6px 14px 0;}
+  .app{margin:0 auto;padding:20px 16px;}
+  .app-header{margin-bottom:8px;}
+  .brand{display:flex;align-items:center;column-gap:11px;row-gap:4px;flex-wrap:wrap;}
+  .brand-symbol{flex:none;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;}
+  .brand-name{margin:0;color:var(--brand-ink);font-size:1.7rem;line-height:1;font-weight:800;letter-spacing:-0.035em;}
+  .brand-tag{color:var(--muted);font-size:0.82rem;line-height:1.4;align-self:center;flex:1 1 240px;min-width:0;border-left:1px solid var(--line);padding-left:11px;}
+  @media (max-width:600px){
+    .brand-name{font-size:1.5rem;}.brand-symbol{width:30px;height:30px;}
+    .brand-tag{flex-basis:100%;border-left:none;padding-left:0;margin-top:2px;}
+  }
+  .desktop{max-width:920px;}
+  .mobile{max-width:390px;}
+</style>
+</head>
+<body>
+  <div class="label" style="max-width:920px;margin:14px auto 0;">데스크톱 (≈920px)</div>
+  <div class="frame desktop">
+    <div class="app"><header class="app-header"><div class="brand">
+      <img src="symbol.png" alt="국유공간든든" class="brand-symbol" width="34" height="34" />
+      <h1 class="brand-name">국유공간든든</h1>
+      <span class="brand-tag">청년·소상공인을 위한 국유 유휴공간 통합 매칭 · 캠코 공공데이터 기반</span>
+    </div></header></div>
+  </div>
+  <div class="label" style="max-width:390px;margin:14px auto 0;">모바일 (≈390px)</div>
+  <div class="frame mobile">
+    <div class="app"><header class="app-header"><div class="brand">
+      <img src="symbol.png" alt="국유공간든든" class="brand-symbol" width="30" height="30" />
+      <h1 class="brand-name">국유공간든든</h1>
+      <span class="brand-tag">청년·소상공인을 위한 국유 유휴공간 통합 매칭 · 캠코 공공데이터 기반</span>
+    </div></header></div>
+  </div>
+</body>
+</html>
