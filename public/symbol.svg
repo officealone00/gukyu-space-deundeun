@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="국유공간든든 심볼">
+  <!-- 위치 핀 = 어디에 있는지 / 본체 = 공간(문·아치) -->
+  <path d="M32 4C20.4 4 11 13.4 11 25c0 14.7 18.3 32.4 19.1 33.2a2.7 2.7 0 0 0 3.8 0C34.7 57.4 53 39.7 53 25 53 13.4 43.6 4 32 4Z" fill="#1f5fff"/>
+  <!-- 문/아치(유휴공간을 연다) -->
+  <path d="M24 33V24a8 8 0 0 1 16 0v9" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round"/>
+  <rect x="29" y="28" width="6" height="7" rx="1" fill="#ffffff"/>
+  <!-- 매칭·안심 체크 -->
+  <circle cx="45.5" cy="40.5" r="9" fill="#15a06a" stroke="#ffffff" stroke-width="2.4"/>
+  <path d="M41.5 40.6l2.8 2.8 5-5.2" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

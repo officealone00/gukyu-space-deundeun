@@ -1,0 +1,15 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#f6f8fc"/>
+  <rect width="1200" height="12" fill="#1f5fff"/>
+  <g transform="translate(120 150)">
+    <path d="M48 0C30.3 0 16 14.3 16 32c0 22 27.6 48.8 28.8 50a4 4 0 0 0 6.4 0C52.4 80.8 80 54 80 32 80 14.3 65.7 0 48 0Z" fill="#1f5fff"/>
+    <path d="M37 46V33a11 11 0 0 1 22 0v13" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+    <rect x="44" y="40" width="8" height="9" rx="1.5" fill="#fff"/>
+    <circle cx="67" cy="56" r="13" fill="#15a06a" stroke="#fff" stroke-width="3.5"/>
+    <path d="M61 56.3l4 4 7-7.4" stroke="#fff" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="120" y="360" font-family="Pretendard, system-ui, sans-serif" font-size="76" font-weight="800" fill="#0b3bb0" letter-spacing="-2">국유공간든든</text>
+  <text x="120" y="430" font-family="Pretendard, system-ui, sans-serif" font-size="34" font-weight="600" fill="#1a2233">비어있는 국유공간을, 창업할 자리로.</text>
+  <text x="120" y="482" font-family="Pretendard, system-ui, sans-serif" font-size="26" font-weight="500" fill="#6b7686">캠코 공공데이터로 임대·공실·국유지를 한 번에 — 업종·예산·지역만 넣으세요.</text>
+  <text x="120" y="556" font-family="Pretendard, system-ui, sans-serif" font-size="20" font-weight="500" fill="#97a0ad">한국자산관리공사·국토교통부 공공데이터(data.go.kr) 기반 · 인사이트랩</text>
+</svg>

@@ -1,0 +1,4 @@
+# 로컬 Worker(wrangler dev)용 비밀값. 이 파일을 .dev.vars 로 복사하고 키를 채우세요.
+# (.dev.vars 는 .gitignore로 커밋 제외됨. 브라우저엔 절대 노출되지 않음)
+DATAGO_KEY=여기에_data.go.kr_일반인증키
+OPENAI_KEY=여기에_OpenAI_API_키_sk-로_시작

@@ -1,0 +1,6 @@
+name = "gukyu-space-proxy"
+main = "index.ts"
+compatibility_date = "2025-01-01"
+
+# 비밀키 등록(로컬에서):
+#   wrangler secret put DATAGO_KEY
